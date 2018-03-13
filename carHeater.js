@@ -59,7 +59,7 @@ _.delay(function() {
     let i=0;
     do {
         heater.setCapabilityValue('onoff', true);
-        wait(1000)
+        await wait(1000)
         i++;
     } while (i < repeat);  
 }, ondelay*60*1000);
@@ -70,7 +70,7 @@ _.delay(function() {
     let i=0;
     do {
         heater.setCapabilityValue('onoff', false);
-        wait(1000)
+        await wait(1000)
         i++;
     } while (i < repeat);
 }, offdelay*60*1000);
