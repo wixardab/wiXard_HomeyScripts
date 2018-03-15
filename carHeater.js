@@ -6,9 +6,10 @@
 //
 // A very simple script, but it works. Should be easy for anyone to adapt for their own needs.
 
-async function wait(timeout) 
-{  
-    return await new Promise((resolve) => { _.delay(function(text) {resolve();}, timeout)})
+function changeDeviceState(device, state)
+{
+    device.setCapabilityValue('onoff', state);
+    console.log(`changeDeviceState: ${device.name}: ${state}`);
 }
 
 var out_temp;
@@ -30,7 +31,7 @@ _.forEach(devices, device => {
 console.log(`Utetemp: ${out_temp}`);
 console.log(`Current state: ${heater.state.onoff}`);
 
-// Decide how long to turn on the heater, if at all.
+/* Only turn on heater if temp is above 10 */
 if (out_temp > 10)
 { 
     return true;
@@ -53,26 +54,13 @@ else
 
 var repeat=5;
 
-// Function to be called att [SCRIPT_START] + [ondelay] minutes
-// Turns the device on [repeat] times
-_.delay(function() {
-    let i=0;
-    do {
-        heater.setCapabilityValue('onoff', true);
-        await wait(1000)
-        i++;
-    } while (i < repeat);  
-}, ondelay*60*1000);
-
-// Function to be called att [SCRIPT_START] + [offdelay] minutes
-// Turns the device off [repeat] times
-_.delay(function() {
-    let i=0;
-    do {
-        heater.setCapabilityValue('onoff', false);
-        await wait(1000)
-        i++;
-    } while (i < repeat);
-}, offdelay*60*1000);
+// Setup the commands to be executed
+// Do [repeat] commands of each with 2 secs delay between
+for (i=0; i<repeat; i++)
+{
+    let interDelay = 1000 * 2 * i
+    _.delay(changeDeviceState, interDelay + (ondelay*60*1000), heater, true);
+    _.delay(changeDeviceState, interDelay + (offdelay*60*1000), heater, false);
+}
 
 return true;
