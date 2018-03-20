@@ -56,7 +56,7 @@ var repeat=5;
 
 // Setup the commands to be executed
 // Do [repeat] commands of each with 2 secs delay between
-for (i=1; i<=repeat; i++)
+for (i=0; i<repeat; i++)
 {
     let interDelay = 1000 * 2 * i
     _.delay(changeDeviceState, interDelay + (ondelay*60*1000), heater, true);
